@@ -16,11 +16,24 @@ import { CarMIcon } from "@alfalab/icons-glyph/CarMIcon";
 import { RubOffMIcon } from "@alfalab/icons-glyph/RubOffMIcon";
 import { Divider } from "@alfalab/core-components/divider";
 
+function calculateMonthlyPayment(
+  annualRate: number,
+  periodsPerYear: number,
+  totalPeriods: number,
+  loanAmount: number,
+) {
+  const monthlyRate = annualRate / periodsPerYear;
+
+  return (
+    (monthlyRate * loanAmount) / (1 - Math.pow(1 + monthlyRate, -totalPeriods))
+  );
+}
+
 export const App = () => {
   const [loading, setLoading] = useState(false);
   const [thx, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
   const [amount, setAmount] = useState(1_900_000);
-  const [radioButton, setRadioButton] = useState("1");
+  const [radioButton, setRadioButton] = useState("Без залога");
   const [step, setStep] = useState(0);
 
   const handleSumSliderChange = ({ value }: { value: number }) => {
@@ -101,7 +114,10 @@ export const App = () => {
             Выберите предложение
           </Typography.Text>
 
-          <div className={appSt.card} onClick={() => setRadioButton("1")}>
+          <div
+            className={appSt.card}
+            onClick={() => setRadioButton("Без залога")}
+          >
             <div className={appSt.topContainer}>
               <div className={appSt.textContainer}>
                 <Typography.Text
@@ -125,7 +141,7 @@ export const App = () => {
                 size={24}
                 label=""
                 disabled={false}
-                checked={radioButton === "1"}
+                checked={radioButton === "Без залога"}
                 block={false}
               />
             </div>
@@ -156,7 +172,7 @@ export const App = () => {
 
           <Gap size={16} />
 
-          <div className={appSt.card} onClick={() => setRadioButton("2")}>
+          <div className={appSt.card} onClick={() => setRadioButton("Авто")}>
             <div className={appSt.topContainer}>
               <div className={appSt.textContainer}>
                 <Typography.Text
@@ -173,14 +189,21 @@ export const App = () => {
                   weight="bold"
                   style={{ marginBottom: 0 }}
                 >
-                  10 693 ₽ в месяц
+                  {calculateMonthlyPayment(0.27, 12, 12, amount).toLocaleString(
+                    "ru-RU",
+                    {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    },
+                  )}{" "}
+                  ₽ в месяц
                 </Typography.Text>
               </div>
               <Radio
                 size={24}
                 label=""
                 disabled={false}
-                checked={radioButton === "2"}
+                checked={radioButton === "Авто"}
                 block={false}
               />
             </div>
@@ -211,7 +234,10 @@ export const App = () => {
 
           <Gap size={16} />
 
-          <div className={appSt.card} onClick={() => setRadioButton("3")}>
+          <div
+            className={appSt.card}
+            onClick={() => setRadioButton("Недвижимость")}
+          >
             <div className={appSt.topContainer}>
               <div className={appSt.textContainer}>
                 <Typography.Text
@@ -228,14 +254,23 @@ export const App = () => {
                   weight="bold"
                   style={{ marginBottom: 0 }}
                 >
-                  16 100 ₽ в месяц
+                  {calculateMonthlyPayment(
+                    0.2807,
+                    12,
+                    12,
+                    amount,
+                  ).toLocaleString("ru-RU", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  ₽ в месяц
                 </Typography.Text>
               </div>
               <Radio
                 size={24}
                 label=""
                 disabled={false}
-                checked={radioButton === "3"}
+                checked={radioButton === "Недвижимость"}
                 block={false}
               />
             </div>
@@ -300,7 +335,11 @@ export const App = () => {
                 weight="bold"
                 defaultMargins={false}
               >
-                1 900 000 ₽
+                {amount.toLocaleString("ru-RU", {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })}{" "}
+                ₽
               </Typography.Text>
               <Typography.Text
                 tag="p"
@@ -322,7 +361,7 @@ export const App = () => {
                 weight="bold"
                 defaultMargins={false}
               >
-                На 7 лет
+                На 1 год
               </Typography.Text>
               <Typography.Text
                 tag="p"
@@ -338,14 +377,55 @@ export const App = () => {
               className={appSt.sumCard}
               style={{ borderRadius: 0, marginTop: "-1px" }}
             >
-              <Typography.Text
-                tag="p"
-                view="primary-large"
-                weight="bold"
-                defaultMargins={false}
-              >
-                16 000 ₽
-              </Typography.Text>
+              {radioButton === "Без залога" && (
+                <Typography.Text
+                  tag="p"
+                  view="primary-large"
+                  weight="bold"
+                  defaultMargins={false}
+                >
+                  16 000 ₽
+                </Typography.Text>
+              )}
+
+              {radioButton === "Авто" && (
+                <Typography.Text
+                  tag="p"
+                  view="primary-large"
+                  weight="bold"
+                  defaultMargins={false}
+                >
+                  {calculateMonthlyPayment(0.27, 12, 12, amount).toLocaleString(
+                    "ru-RU",
+                    {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    },
+                  )}{" "}
+                  ₽
+                </Typography.Text>
+              )}
+
+              {radioButton === "Недвижимость" && (
+                <Typography.Text
+                  tag="p"
+                  view="primary-large"
+                  weight="bold"
+                  defaultMargins={false}
+                >
+                  {calculateMonthlyPayment(
+                    0.2807,
+                    12,
+                    12,
+                    amount,
+                  ).toLocaleString("ru-RU", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  ₽
+                </Typography.Text>
+              )}
+
               <Typography.Text
                 tag="p"
                 view="primary-small"
@@ -372,7 +452,7 @@ export const App = () => {
                 defaultMargins={false}
                 weight={"bold"}
               >
-                Авто
+                {radioButton}
               </Typography.Text>
               <Typography.Text
                 tag="p"

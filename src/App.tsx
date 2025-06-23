@@ -134,7 +134,16 @@ export const App = () => {
                   weight="bold"
                   style={{ marginBottom: 0 }}
                 >
-                  16 100 ₽ в месяц
+                  {calculateMonthlyPayment(
+                    0.339,
+                    12,
+                    12,
+                    amount,
+                  ).toLocaleString("ru-RU", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  ₽ в месяц
                 </Typography.Text>
               </div>
               <Radio
@@ -384,7 +393,16 @@ export const App = () => {
                   weight="bold"
                   defaultMargins={false}
                 >
-                  16 000 ₽
+                  {calculateMonthlyPayment(
+                    0.339,
+                    12,
+                    12,
+                    amount,
+                  ).toLocaleString("ru-RU", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  ₽
                 </Typography.Text>
               )}
 
@@ -495,7 +513,7 @@ export const App = () => {
             view="ghost"
             style={{ height: "56px" }}
           >
-            Внести изменения
+            Изменить условия
           </ButtonMobile>
         </div>
       )}
